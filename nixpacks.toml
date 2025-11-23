@@ -2,21 +2,18 @@
 nixPkgs = ['nodejs_20']
 
 [phases.install]
+# Standard dependencies installation
 cmds = [
   'npm install',
   'npm install @rollup/rollup-linux-x64-gnu --save-optional'
 ]
 
 [phases.build]
+# ONLY run the Medusa backend build (medusa build)
 cmds = [
-  'npm run build',
-  'echo "=== Copying admin to correct location ==="',
-  'mkdir -p .medusa/server/public/admin',
-  'cp -r .medusa/client/* .medusa/server/public/admin/',
-  'echo "=== Verifying copy ==="',
-  'ls -la .medusa/server/public/admin/',
-  'test -f .medusa/server/public/admin/index.html && echo "✓ index.html found!" || echo "✗ index.html missing"'
+  'npm run build'
 ]
 
 [start]
+# ONLY run the Medusa backend start (medusa start)
 cmd = 'npm run start'
