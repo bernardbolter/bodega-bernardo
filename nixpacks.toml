@@ -14,5 +14,7 @@ cmds = [
 ]
 
 [start]
-# We execute the script and grant execution permissions first
-cmd = 'chmod +x start.sh && ./start.sh'
+# FINAL ATTEMPT: We combine the script logic into a robust shell command:
+# 1. Set environment variables.
+# 2. Execute the npm start command.
+cmd = 'export ADMIN_PATH="/no/admin/here" && export MEDUSA_ADMIN_PATH="/no/admin/here" && npm run start'
