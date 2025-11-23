@@ -11,11 +11,11 @@ cmds = [
 cmds = [
   'npm run build',
   'echo "=== Copying admin to correct location ==="',
-  'mkdir -p .medusa/server/public',
-  'cp -r .medusa/client .medusa/server/public/admin',
+  'mkdir -p .medusa/server/public/admin',
+  'cp -r .medusa/client/* .medusa/server/public/admin/',
   'echo "=== Verifying copy ==="',
   'ls -la .medusa/server/public/admin/',
-  'find .medusa/server/public -name "index.html"'
+  'test -f .medusa/server/public/admin/index.html && echo "✓ index.html found!" || echo "✗ index.html missing"'
 ]
 
 [start]
