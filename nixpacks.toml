@@ -14,6 +14,5 @@ cmds = [
 ]
 
 [start]
-# CRITICAL FIX: We are injecting environment variables directly into the start command 
-# to override the default integrated Admin serving behavior.
-cmd = 'ADMIN_PATH=/no/admin/here MEDUSA_ADMIN_PATH=/no/admin/here npm run start'
+# We execute the script and grant execution permissions first
+cmd = 'chmod +x start.sh && ./start.sh'
