@@ -22,3 +22,7 @@
 //     },
 //   })
 // }
+
+export function register() {
+  // Instrumentation disabled for now
+}
