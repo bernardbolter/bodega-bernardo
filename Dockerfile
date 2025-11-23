@@ -17,9 +17,8 @@ RUN npm install --omit=dev
 COPY . .
 
 # Run the Medusa backend compilation only.
-# This command bypasses the unreliable 'npm run build' which attempts to 
-# compile the Admin dashboard frontend and fails on missing optional dependencies.
-RUN medusa build --backend
+# FIX: Use 'npx' to ensure the 'medusa' binary is found in node_modules/.bin
+RUN npx medusa build --backend
 
 # Expose the default Medusa port
 EXPOSE 9000
