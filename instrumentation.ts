@@ -23,6 +23,6 @@
 //   })
 // }
 
-export function register() {
+exports.register = function() {
   // Instrumentation disabled for now
 }
