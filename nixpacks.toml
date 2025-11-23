@@ -10,11 +10,12 @@ cmds = [
 [phases.build]
 cmds = [
   'npm run build',
-  'echo "=== Build completed ==="',
-  'ls -la .medusa/',
-  'ls -la .medusa/server/ || echo "No server folder"',
-  'ls -la .medusa/server/public/ || echo "No public folder"',
-  'find .medusa -name "index.html" || echo "No index.html found"'
+  'echo "=== Copying admin to correct location ==="',
+  'mkdir -p .medusa/server/public',
+  'cp -r .medusa/client .medusa/server/public/admin',
+  'echo "=== Verifying copy ==="',
+  'ls -la .medusa/server/public/admin/',
+  'find .medusa/server/public -name "index.html"'
 ]
 
 [start]
