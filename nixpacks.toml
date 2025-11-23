@@ -2,18 +2,18 @@
 nixPkgs = ['nodejs_20']
 
 [phases.install]
-# Standard dependencies installation
-cmds = [
-  'npm install',
-  'npm install @rollup/rollup-linux-x64-gnu --save-optional'
+cmds = [ 
+  'npm install', 
+  'npm install @rollup/rollup-linux-x64-gnu --save-optional' 
 ]
 
 [phases.build]
-# ONLY run the Medusa backend build (medusa build)
-cmds = [
-  'npm run build'
+# Runs medusa build for the backend API
+cmds = [ 
+  'npm run build' 
 ]
 
 [start]
-# ONLY run the Medusa backend start (medusa start)
-cmd = 'npm run start'
+# CRITICAL FIX: We are injecting environment variables directly into the start command 
+# to override the default integrated Admin serving behavior.
+cmd = 'ADMIN_PATH=/no/admin/here MEDUSA_ADMIN_PATH=/no/admin/here npm run start'
