@@ -7,11 +7,15 @@ cmds = ['npm ci --prefer-offline --no-audit']
 
 [phases.build]
 dependsOn = ['install']
-cmds = ['npm run build']
+cmds = [
+  'npm run build',
+  'echo "=== Checking for .medusa directory ==="',
+  'ls -la',
+  'echo "=== Contents of .medusa if it exists ==="',
+  'ls -la .medusa/ || echo ".medusa directory not found!"',
+  'echo "=== Checking for build output ==="',
+  'find . -name "index.html" -type f || echo "No index.html found"'
+]
 
 [start]
 cmd = 'npm run start'
-
-# This ensures build artifacts are kept
-[phases.build]
-cacheDirectories = ['.medusa']
