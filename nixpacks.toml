@@ -2,10 +2,16 @@
 nixPkgs = ['nodejs_20']
 
 [phases.install]
-cmds = ['npm ci']
+dependsOn = ['setup']
+cmds = ['npm ci --prefer-offline --no-audit']
 
 [phases.build]
-cmds = ['npx medusa build']
+dependsOn = ['install']
+cmds = ['npm run build']
 
 [start]
 cmd = 'npm run start'
+
+# This ensures build artifacts are kept
+[phases.build]
+cacheDirectories = ['.medusa']

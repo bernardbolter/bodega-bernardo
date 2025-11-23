@@ -1,0 +1,41 @@
+# Dependencies (installed fresh in container)
+node_modules
+
+# Git files (not needed in container)
+.git
+.gitignore
+.github
+
+# Environment files (use Railway's env vars instead)
+.env
+.env.local
+.env.*.local
+
+# Build artifacts that will be rebuilt
+dist
+build
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+README.md
+.prettierrc
+.eslintrc.js
