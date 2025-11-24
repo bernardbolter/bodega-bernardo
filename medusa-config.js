@@ -1,22 +1,13 @@
 const { loadEnv, defineConfig } = require('@medusajs/framework/utils')
 
-// Load environment variables based on environment or default to 'development'
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
-
-// Explicitly set adminPath to null to prevent the Medusa V2 server
-// from trying to serve the Admin dashboard assets locally.
-const adminPath = null
-
-// Define the Redis URL. If REDIS_URL is not set in the environment,
-// it falls back to null, forcing Medusa to use the in-memory Redis emulator.
-// NOTE: This is NOT recommended for production.
-const redisUrl = process.env.REDIS_URL || null
 
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
-    redisUrl, // Uses the Redis URL (or null for in-memory)
-    adminPath, // This is the crucial fix for the "index.html" error
+    // Only use Redis if the environment variable is explicitly set.
+    // Otherwise, we leave it undefined so modules don't try to connect.
+    redisUrl: process.env.REDIS_URL, 
     http: {
       storeCors: process.env.STORE_CORS,
       adminCors: process.env.ADMIN_CORS,
@@ -24,5 +15,23 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
-  }
+  },
+  // CRITICAL FIX 1: Explicitly disable the Admin module.
+  // This tells Medusa V2 NOT to try serving the dashboard, preventing the index.html error.
+  admin: {
+    disable: true,
+  },
+  // CRITICAL FIX 2: Force In-Memory modules to prevent Redis connection attempts.
+  // This stops the [ioredis] ECONNREFUSED crash if you don't have a Redis URL.
+  modules: [
+    {
+      resolve: "@medusajs/medusa/cache-inmemory",
+    },
+    {
+      resolve: "@medusajs/medusa/event-bus-local",
+    },
+    {
+      resolve: "@medusajs/medusa/workflow-engine-inmemory",
+    }
+  ]
 })
