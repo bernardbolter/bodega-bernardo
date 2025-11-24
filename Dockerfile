@@ -18,10 +18,14 @@ RUN npm install --omit=dev
 # Copy all other application files (including source files and tsconfig.json)
 COPY . .
 
-# FIX 2: Explicitly compile the backend using the TypeScript compiler (tsc).
-# This is the most reliable way to compile the backend code into the 
-# .medusa/server directory, skipping the unstable Admin frontend build.
-RUN npx tsc --project tsconfig.json --outDir .medusa/server
+# FIX 2 (NEW): Create a temporary tsconfig for production compilation.
+# This file extends your original config but explicitly excludes all test files and folders,
+# resolving the 'jest'/'expect' compilation errors.
+RUN echo '{ "extends": "./tsconfig.json", "exclude": ["integration-tests", "**/*.spec.ts", "test"] }' > tsconfig.build.json
+
+# FIX 3 (UPDATED): Explicitly compile the backend using the TypeScript compiler (tsc).
+# We now use the safe 'tsconfig.build.json' file we created above.
+RUN npx tsc --project tsconfig.build.json --outDir .medusa/server
 
 # Expose the default Medusa port
 EXPOSE 9000
