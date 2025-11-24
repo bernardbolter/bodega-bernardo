@@ -10,30 +10,26 @@ ENV ADMIN_PATH=/no/admin/here
 
 # Copy package files (for caching) and install production dependencies
 COPY package*.json ./
-
-# Install production dependencies + ts-node (required for CLI stability)
-RUN npm install --omit=dev
-RUN npm install ts-node
+# Install production dependencies + ts-node
+RUN npm install --omit=dev && npm install ts-node
 
 # Copy all application source files
 COPY . .
 
-# FIX 1: NEUTRALIZE THE START SCRIPT IN PACKAGE.JSON
+# FIX 1: NEUTRALIZE THE START SCRIPT
 RUN sed -i 's/"start": "medusa start"/"start": "echo \\"Headless Server Starting via Docker CMD\\""/' package.json
 
-# FIX 2: Create a production-only tsconfig to exclude test files.
+# FIX 2: COMPILE BACKEND
 RUN echo '{ "extends": "./tsconfig.json", "exclude": ["integration-tests", "**/*.spec.ts", "test"] }' > tsconfig.build.json
-
-# FIX 3: Explicitly compile the backend using the TypeScript compiler (tsc).
 RUN npx tsc --project tsconfig.build.json --outDir .medusa/server
 
-# FIX 4: Remove tsconfig files after build. 
-# This forces the Medusa CLI to run in pure JavaScript mode using the compiled files, 
-# preventing it from trying to re-compile or use development tools.
-RUN rm tsconfig.json tsconfig.build.json
+# FIX 3: REMOVE TSCONFIG AND SOURCE FILES to force JS mode
+# IMPORTANT: This step deletes the uncompiled TypeScript source code (src/)
+# which prevents the 'Unexpected token ':' error during runtime.
+RUN rm -rf tsconfig.json tsconfig.build.json src/
 
-# Expose the default Medusa port
+# Expose port
 EXPOSE 9000
 
-# FIX 5: Use the correct Medusa V2 commands.
+# FIX 4: START COMMAND
 CMD ["/bin/bash", "-c", "npx medusa db:migrate && npx medusa start"]
